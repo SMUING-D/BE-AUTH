@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Entity
-public class User {
+public class UserEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -23,7 +23,7 @@ public class User {
     private String role;  // ADMIN, USER
 
     @Builder
-    public User(String username, String password, String role) {
+    public UserEntity(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;

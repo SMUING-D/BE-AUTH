@@ -28,7 +28,12 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(STATELESS)
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorizeHttpRequests) ->
+                        authorizeHttpRequests
+                                .requestMatchers("/api/v1/register").permitAll()
+                                .anyRequest().authenticated()
+                );
 
         return http.build();
     }
@@ -44,7 +49,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public static BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
