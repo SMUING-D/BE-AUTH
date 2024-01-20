@@ -1,6 +1,6 @@
 package dev.umc.auth.global.auth;
 
-import dev.umc.auth.domain.user.domain.User;
+import dev.umc.auth.domain.user.domain.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,13 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public record PrincipalDetails(User user) implements UserDetails {
+public record PrincipalDetails(UserEntity userEntity) implements UserDetails {
 
     private static final String ROLE_PREFIX = "ROLE_";
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(ROLE_PREFIX + user.getRole());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(ROLE_PREFIX + userEntity.getRole());
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(authority);
         return authorities;
@@ -22,12 +22,12 @@ public record PrincipalDetails(User user) implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return userEntity.getUsername();
     }
 
     @Override
