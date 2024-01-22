@@ -15,4 +15,12 @@ public class UserRequest {
         private String password;
         private String role;
     }
+
+    @Data @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserAuthenticate {
+        private String username;
+        private String password;
+    }
 }
