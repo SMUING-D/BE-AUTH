@@ -1,6 +1,7 @@
 package dev.umc.auth.global.auth;
 
 import dev.umc.auth.domain.user.dto.UserRequest;
+import dev.umc.auth.global.auth.dto.AuthDto;
 import dev.umc.auth.global.auth.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class AuthenticationController {
         }
 
         UserDetails userDetails = principalDetailsService.loadUserByUsername(userAuthenticate.getUsername());
-        String accessToken = tokenProvider.createToken(userDetails);
-        return ResponseEntity.ok(accessToken);
+        AuthDto.TokenDto tokenDto = tokenProvider.createToken(userDetails);
+        return ResponseEntity.ok(tokenDto);
     }
 }
