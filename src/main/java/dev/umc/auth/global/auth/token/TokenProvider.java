@@ -2,6 +2,7 @@ package dev.umc.auth.global.auth.token;
 
 import dev.umc.auth.global.auth.PrincipalDetailsService;
 import dev.umc.auth.global.auth.dto.AuthDto;
+import dev.umc.auth.global.infra.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class TokenProvider {
 
     private final JwtProperties jwtProperties;
     private final PrincipalDetailsService principalDetailsService;
+    private final RedisService redisService;
 
     private static final String TOKEN_KEY = "username";
 
@@ -49,7 +51,7 @@ public class TokenProvider {
                 .setSubject("refresh-token")
                 .signWith(jwtProperties.getKey(), SignatureAlgorithm.HS512)
                 .compact();
-
+        
         return new AuthDto.TokenDto(accessToken, refreshToken);
     }
 
