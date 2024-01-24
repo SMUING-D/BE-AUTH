@@ -1,5 +1,6 @@
 package dev.umc.auth.global.config;
 
+import dev.umc.auth.global.auth.CustomJwtAuthenticationFilter;
 import dev.umc.auth.global.auth.PrincipalDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +11,10 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -20,6 +23,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 public class SecurityConfig {
 
+    private final CustomJwtAuthenticationFilter jwtAuthenticationFilter;
     private final PrincipalDetailsService userDetailsService;
 
     @Bean
@@ -36,6 +40,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/join", "/api/v1/authenticate").permitAll()
                                 .anyRequest().authenticated()
                 );
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
