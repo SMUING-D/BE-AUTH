@@ -1,6 +1,7 @@
 package dev.umc.auth.global.auth.token;
 
 import dev.umc.auth.global.auth.PrincipalDetailsService;
+import dev.umc.auth.global.auth.dto.AuthDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,13 @@ public class TokenProvider {
     private static final String TOKEN_KEY = "username";
 
     @Transactional
-    public String createToken(UserDetails userDetails) {
+    public AuthDto.TokenDto createToken(UserDetails userDetails) {
         Long now = System.currentTimeMillis();
 
         String accessToken = Jwts.builder()
                 .setHeaderParam("alg", "HS512")
                 .setHeaderParam("typ", "JWT")
+                .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + (jwtProperties.getAccessTokenValidityInSeconds() * 1000)))
                 .setSubject("access-token")
@@ -38,7 +40,17 @@ public class TokenProvider {
                 .signWith(jwtProperties.getKey(), SignatureAlgorithm.HS512)
                 .compact();
 
-        return accessToken;
+        String refreshToken = Jwts.builder()
+                .setHeaderParam("alg", "HS512")
+                .setHeaderParam("typ", "JWT")
+                .setIssuer(jwtProperties.getIssuer())
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + (jwtProperties.getRefreshTokenValidityInSeconds() * 1000)))
+                .setSubject("refresh-token")
+                .signWith(jwtProperties.getKey(), SignatureAlgorithm.HS512)
+                .compact();
+
+        return new AuthDto.TokenDto(accessToken, refreshToken);
     }
 
     public boolean validateAccessToken(String accessToken) {
