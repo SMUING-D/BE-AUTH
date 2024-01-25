@@ -23,9 +23,4 @@ public class PrincipalDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with the name " + username));
         return new PrincipalDetails(userEntity);
     }
-
-    public UserResponse.UserJoin join(UserRequest.UserJoin userJoin) {
-        UserEntity newUser = UserConverter.toUserEntity(userJoin);
-        return UserConverter.toUserDto(userRepository.save(newUser));
-    }
 }

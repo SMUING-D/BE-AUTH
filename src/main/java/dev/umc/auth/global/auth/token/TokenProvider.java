@@ -1,7 +1,7 @@
 package dev.umc.auth.global.auth.token;
 
 import dev.umc.auth.global.auth.PrincipalDetailsService;
-import dev.umc.auth.global.auth.dto.AuthDto;
+import dev.umc.auth.global.auth.dto.AuthRequest;
 import dev.umc.auth.global.infra.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
@@ -27,7 +27,7 @@ public class TokenProvider {
     private static final String TOKEN_KEY = "username";
 
     @Transactional
-    public AuthDto.TokenDto createToken(UserDetails userDetails) {
+    public AuthRequest.TokenDto createToken(UserDetails userDetails) {
         Long now = System.currentTimeMillis();
 
         String accessToken = Jwts.builder()
@@ -51,8 +51,8 @@ public class TokenProvider {
                 .setSubject("refresh-token")
                 .signWith(jwtProperties.getKey(), SignatureAlgorithm.HS512)
                 .compact();
-        
-        return new AuthDto.TokenDto(accessToken, refreshToken);
+
+        return new AuthRequest.TokenDto(accessToken, refreshToken);
     }
 
     public boolean validateAccessToken(String accessToken) {

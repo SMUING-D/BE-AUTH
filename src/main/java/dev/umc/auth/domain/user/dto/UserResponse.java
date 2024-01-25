@@ -6,7 +6,7 @@ import lombok.Data;
 public class UserResponse {
 
     @Data @Builder
-    public static class UserJoin {
+    public static class JoinDto {
         private String username;
     }
 }

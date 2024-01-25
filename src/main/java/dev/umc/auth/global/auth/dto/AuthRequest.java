@@ -2,7 +2,7 @@ package dev.umc.auth.global.auth.dto;
 
 import lombok.*;
 
-public class AuthDto {
+public class AuthRequest {
     @Data @Builder
     @NoArgsConstructor
     @AllArgsConstructor
