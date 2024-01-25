@@ -8,7 +8,7 @@ import static dev.umc.auth.global.config.SecurityConfig.passwordEncoder;
 
 public class UserConverter {
 
-    public static UserEntity toUserEntity(UserRequest.UserJoin userJoin) {
+    public static UserEntity toUserEntity(UserRequest.JoinDto userJoin) {
         return UserEntity.builder()
                 .username(userJoin.getUsername())
                 .password(passwordEncoder().encode(userJoin.getPassword()))
@@ -16,8 +16,8 @@ public class UserConverter {
                 .build();
     }
 
-    public static UserResponse.UserJoin toUserDto(UserEntity user) {
-        return UserResponse.UserJoin.builder()
+    public static UserResponse.JoinDto toUserDto(UserEntity user) {
+        return UserResponse.JoinDto.builder()
                 .username(user.getUsername())
                 .build();
     }
