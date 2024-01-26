@@ -1,7 +1,7 @@
 package dev.umc.auth.global.auth.token;
 
 import dev.umc.auth.global.auth.PrincipalDetailsService;
-import dev.umc.auth.global.auth.dto.AuthRequest;
+import dev.umc.auth.global.auth.dto.AuthResponse;
 import dev.umc.auth.global.infra.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
@@ -27,7 +27,7 @@ public class TokenProvider {
     private static final String TOKEN_KEY = "username";
 
     @Transactional
-    public AuthRequest.TokenDto createToken(UserDetails userDetails) {
+    public AuthResponse.TokenDto createToken(UserDetails userDetails) {
         Long now = System.currentTimeMillis();
 
         String accessToken = Jwts.builder()
@@ -52,7 +52,21 @@ public class TokenProvider {
                 .signWith(jwtProperties.getKey(), SignatureAlgorithm.HS512)
                 .compact();
 
-        return new AuthRequest.TokenDto(accessToken, refreshToken);
+        return new AuthResponse.TokenDto(accessToken, refreshToken);
+    }
+
+    public boolean isAccessTokenExpired(String accessToken) {
+        try {
+            return getClaims(accessToken)
+                    .getExpiration()
+                    .before(new Date());  // true -> 만료
+        } catch (ExpiredJwtException e) {
+            // 기간 만료 되었을 경우
+            return true;
+        } catch (Exception e) {
+            // 기간 만료 되지 않은 경우
+            return false;
+        }
     }
 
     public boolean validateAccessToken(String accessToken) {
@@ -74,6 +88,27 @@ public class TokenProvider {
         }
     }
 
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(jwtProperties.getKey())
+                    .build()
+                    .parseClaimsJws(refreshToken);
+            return true;
+        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
+            log.error("UnsupportedJwtException | MalformedJwtException | SignatureException");
+            throw new JwtException("Validate Access Token Exception");
+        } catch (ExpiredJwtException e) {
+            log.error("ExpiredJwtException");
+            throw new JwtException("Validate Access Token Exception");  // ExpiredJwtException 던지고 싶은데 고민
+        } catch (IllegalArgumentException e) {
+            log.error("IllegalArgumentException");
+            throw new IllegalArgumentException("IllegalArgumentException");
+        }
+    }
+
+
+
     public Claims getClaims(String token) {
         try {
             return Jwts.parserBuilder()
@@ -86,8 +121,8 @@ public class TokenProvider {
         }
     }
 
-    public Authentication getAuthentication(String token) {
-        String username = getClaims(token).get(TOKEN_KEY).toString();
+    public Authentication getAuthentication(String accessToken) {
+        String username = getClaims(accessToken).get(TOKEN_KEY).toString();
         UserDetails userDetails = principalDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
