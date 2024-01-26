@@ -5,7 +5,7 @@ import dev.umc.auth.domain.user.domain.UserEntity;
 import dev.umc.auth.domain.user.domain.UserRepository;
 import dev.umc.auth.domain.user.dto.UserRequest;
 import dev.umc.auth.domain.user.dto.UserResponse;
-import dev.umc.auth.global.auth.dto.AuthRequest;
+import dev.umc.auth.global.auth.dto.AuthResponse;
 import dev.umc.auth.global.auth.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.*;
@@ -25,6 +25,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
 
+    private final static String TOKEN_PREFIX = "Bearer ";
+
     @Transactional
     public UserResponse.JoinDto join(UserRequest.JoinDto userJoin) {
         UserEntity newUser = UserConverter.toUserEntity(userJoin);
@@ -32,7 +34,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthRequest.TokenDto login(@RequestBody UserRequest.LoginDto loginDto) {
+    public AuthResponse.TokenDto login(@RequestBody UserRequest.LoginDto loginDto) {
         try {
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authenticate);
@@ -46,5 +48,26 @@ public class AuthService {
 
         UserDetails userDetails = principalDetailsService.loadUserByUsername(loginDto.getUsername());
         return tokenProvider.createToken(userDetails);
+    }
+
+    public boolean validate(String requestAccessToken) {
+        String bearerToken = resolveToken(requestAccessToken);
+        return tokenProvider.isAccessTokenExpired(bearerToken);
+    }
+
+    public AuthResponse.TokenDto reissue(String requestAccessToken, String requestRefreshToken) {
+        String accessToken = resolveToken(requestAccessToken);
+        Authentication authentication = tokenProvider.getAuthentication(accessToken);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = principalDetailsService.loadUserByUsername(authentication.getName());
+        return tokenProvider.createToken(userDetails);
+    }
+
+    private String resolveToken(String bearerToken) {
+        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }
