@@ -1,6 +1,5 @@
-package dev.umc.auth.global.auth;
+package dev.umc.auth.global.jwt;
 
-import dev.umc.auth.global.auth.token.TokenProvider;
 import io.jsonwebtoken.IncorrectClaimException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,9 +16,9 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Component
-public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtCustomAuthenticationFilter extends OncePerRequestFilter {
 
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final static String HEADER_AUTHORIZATION = "Authorization";
     private final static String TOKEN_PREFIX = "Bearer ";
 
@@ -28,8 +27,8 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = resolveToken(request);
 
         try {
-            if (accessToken != null && tokenProvider.validateAccessToken(accessToken)) {
-                Authentication authentication = tokenProvider.getAuthentication(accessToken);
+            if (accessToken != null && jwtTokenProvider.validateAccessToken(accessToken)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (IncorrectClaimException | UsernameNotFoundException e) {

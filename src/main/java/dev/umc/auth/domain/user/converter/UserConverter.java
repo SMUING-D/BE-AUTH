@@ -1,24 +1,26 @@
 package dev.umc.auth.domain.user.converter;
 
-import dev.umc.auth.domain.user.domain.UserEntity;
 import dev.umc.auth.domain.user.dto.UserRequest;
-import dev.umc.auth.domain.user.dto.UserResponse;
-
-import static dev.umc.auth.global.config.SecurityConfig.passwordEncoder;
+import dev.umc.auth.domain.user.entity.User;
+import dev.umc.auth.global.config.SecurityConfig;
 
 public class UserConverter {
-
-    public static UserEntity toUserEntity(UserRequest.JoinDto userJoin) {
-        return UserEntity.builder()
-                .username(userJoin.getUsername())
-                .password(passwordEncoder().encode(userJoin.getPassword()))
-                .role(userJoin.getRole())
-                .build();
-    }
-
-    public static UserResponse.JoinDto toUserDto(UserEntity user) {
-        return UserResponse.JoinDto.builder()
-                .username(user.getUsername())
+    public static User toUser(UserRequest.JoinDto joinDto) {
+        return User.builder()
+                .username(joinDto.getUsername())
+                .password(SecurityConfig.passwordEncoder().encode(joinDto.getPassword()))
+                .role("USER")
+                .studentId(joinDto.getStudent_id())
+                .major(joinDto.getMajor())
+                .subMajor(joinDto.getSub_major())
+                .email(joinDto.getEmail())
+                .nickname(joinDto.getNickname())
+                .desiredEmployment(joinDto.getDesired_employment())
+                .skill(joinDto.getSkill())
+                .grade(joinDto.getGrade())
+                .college(joinDto.getCollege())
+                .graduation(joinDto.getGraduation())
+                .profileImg(joinDto.getProfile_img())
                 .build();
     }
 }
