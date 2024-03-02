@@ -21,7 +21,7 @@ public class AuthController {
      * @param loginDto
      * @return AuthResponse.TokenDto
      */
-    @PostMapping("/api/v0/auth/login")
+    @PostMapping("/api/v1/auth/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest.LoginDto loginDto) {
         return ResponseEntity.ok(authService.login(loginDto));
     }
@@ -31,7 +31,7 @@ public class AuthController {
      * @param reissueDto
      * @return AuthResponse.TokenDto
      */
-    @PostMapping("/api/v0/auth/reissue")
+    @PostMapping("/api/v1/auth/reissue")
     public ResponseEntity<?> reissue(@RequestBody AuthRequest.ReissueDto reissueDto) {
         return ResponseEntity.ok(authService.reissue(reissueDto));
     }
@@ -41,7 +41,7 @@ public class AuthController {
      * @param requestAccessTokenDto
      * @return null
      */
-    @PostMapping("/api/v0/auth/logout")
+    @PostMapping("/api/v1/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") AuthRequest.AccessTokenDto requestAccessTokenDto) {
         authService.logout(requestAccessTokenDto);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -52,7 +52,7 @@ public class AuthController {
      * @param requestAccessTokenDto
      * @return null
      */
-    @PostMapping("/api/v0/auth/withdraw")
+    @PostMapping("/api/v1/withdraw")
     public ResponseEntity<?> withdraw(@RequestHeader("Authorization") AuthRequest.AccessTokenDto requestAccessTokenDto) {
         authService.withdraw(requestAccessTokenDto);
         return ResponseEntity.ok(HttpStatus.OK);
