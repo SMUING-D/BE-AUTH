@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir ./src/main/resources
           touch ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION }}" | base64 --decode > ./src/main/resources/application.yml
           cat ./src/main/resources/application.yml
         shell: bash
 
