@@ -36,11 +36,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/api/v0/auth/join").permitAll()
-                                .requestMatchers("/api/v0/auth/login").permitAll()
-                                .requestMatchers("/api/v0/auth/reissue").permitAll()
-                                .requestMatchers("/api/v0/auth/logout").permitAll()
-                                .requestMatchers("/api/v0/auth/withdraw").permitAll()
+                                .requestMatchers("/api/v1/auth/join").permitAll()
+                                .requestMatchers("/api/v1/auth/login").permitAll()
+                                .requestMatchers("/api/v1/auth/reissue").permitAll()
+                                .requestMatchers("/api/v1/logout").permitAll()
+                                .requestMatchers("/api/v1/withdraw").permitAll()
                                 .anyRequest().authenticated()
                 );
 
