@@ -14,7 +14,12 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/api/v0/auth/join")
+    /**
+     * 회원가입 메서드
+     * @param joinDto
+     * @return userId
+     */
+    @PostMapping("/api/v1/auth/join")
     public ResponseEntity<?> join(@RequestBody UserRequest.JoinDto joinDto) {
         return ResponseEntity.ok(userService.join(joinDto));
     }
