@@ -1,7 +1,7 @@
 package dev.umc.auth.domain.user.dto;
 
 import dev.umc.auth.domain.user.enums.Grade;
-import dev.umc.auth.domain.user.enums.Graduation;
+import dev.umc.auth.domain.user.enums.UndergraduateGraduate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class UserRequest {
         private String skill;
         private Grade grade;
         private String college;
-        private Graduation graduation;
+        private UndergraduateGraduate graduation;
         private String profile_img;
     }
 }

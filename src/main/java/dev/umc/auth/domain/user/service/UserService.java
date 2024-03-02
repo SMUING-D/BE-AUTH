@@ -19,6 +19,6 @@ public class UserService {
     public UserResponse.JoinSuccessDto join(UserRequest.JoinDto joinDto) {
         User user = UserConverter.toUser(joinDto);
         userRepository.save(user);
-        return new UserResponse.JoinSuccessDto(user.getUserId());
+        return new UserResponse.JoinSuccessDto(user.getId());
     }
 }
